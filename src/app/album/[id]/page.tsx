@@ -1,24 +1,60 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { getAlbumById } from "@/data/musicLibrary";
+import {
+  extractColorsFromImage,
+  generateBackgroundGradient,
+  BackgroundGradient,
+} from "@/utils/colorExtractor";
 
 export default function AlbumPage() {
   const router = useRouter();
   const params = useParams();
   const albumId = params.id as string;
 
+  const [backgroundGradient, setBackgroundGradient] =
+    useState<BackgroundGradient | null>(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
   const album = getAlbumById(albumId);
+
+  // 提取专辑封面颜色
+  useEffect(() => {
+    if (!album) return;
+
+    const extractColors = async () => {
+      try {
+        const colors = await extractColorsFromImage(album.coverImage);
+        const gradient = generateBackgroundGradient(colors);
+        setBackgroundGradient(gradient);
+        setIsImageLoaded(true);
+      } catch (error) {
+        console.error("Failed to extract colors:", error);
+        setIsImageLoaded(true);
+      }
+    };
+
+    extractColors();
+  }, [album]);
 
   if (!album) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-center justify-center">
+      <div
+        className="min-h-screen flex items-center justify-center transition-all duration-1000 ease-in-out"
+        style={{
+          background:
+            backgroundGradient?.style ||
+            "linear-gradient(to br, #fefce8, #fef3c7)",
+        }}
+      >
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">专辑未找到</h1>
+          <h1 className="text-2xl font-bold text-white mb-4">专辑未找到</h1>
           <button
             onClick={() => router.push("/")}
-            className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+            className="px-6 py-3 bg-white/20 text-white rounded-full hover:bg-white/30 transition-colors backdrop-blur-sm"
           >
             返回首页
           </button>
@@ -28,7 +64,14 @@ export default function AlbumPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+    <div
+      className="min-h-screen transition-all duration-1000 ease-in-out"
+      style={{
+        background:
+          backgroundGradient?.style ||
+          "linear-gradient(to br, #fefce8, #fef3c7)",
+      }}
+    >
       <div className="flex gap-6 p-6 px-12">
         {/* 左侧主要内容 */}
         <div className="flex-1">
@@ -36,7 +79,7 @@ export default function AlbumPage() {
           <div className="mb-6">
             <button
               onClick={() => router.push("/")}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -67,11 +110,11 @@ export default function AlbumPage() {
               />
             </div>
             <div className="flex flex-col justify-end">
-              <div className="text-sm text-gray-600 mb-2">专辑</div>
-              <h1 className="text-4xl font-bold text-gray-800 mb-2">
+              <div className="text-sm text-white/60 mb-2">专辑</div>
+              <h1 className="text-4xl font-bold text-white mb-2">
                 {album.title}
               </h1>
-              <div className="flex items-center gap-4 text-gray-600">
+              <div className="flex items-center gap-4 text-white/80">
                 <span className="font-medium">{album.artist}</span>
                 <span>•</span>
                 <span>{album.year}</span>
@@ -83,30 +126,30 @@ export default function AlbumPage() {
 
           {/* 歌曲列表 */}
           <div className="mb-8">
-            <h3 className="text-xl font-bold text-gray-800 mb-6">歌曲列表</h3>
+            <h3 className="text-xl font-bold text-white mb-6">歌曲列表</h3>
             <div className="space-y-2">
               {album.songs.map((song, index) => (
                 <div
                   key={song.id}
-                  className="group cursor-pointer p-4 rounded-lg hover:bg-white/50 transition-colors"
+                  className="group cursor-pointer p-4 rounded-lg hover:bg-white/20 transition-colors"
                   onClick={() => {
                     router.push(`/song/${song.id}`);
                   }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-8 text-center text-gray-500 group-hover:text-gray-800">
+                    <div className="w-8 text-center text-white/60 group-hover:text-white">
                       {index + 1}
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-gray-800 group-hover:text-black">
+                      <div className="font-semibold text-white group-hover:text-white">
                         {song.title}
                       </div>
-                      <div className="text-sm text-gray-600">{song.artist}</div>
+                      <div className="text-sm text-white/70">{song.artist}</div>
                     </div>
-                    <div className="text-sm text-gray-500">{song.duration}</div>
+                    <div className="text-sm text-white/60">{song.duration}</div>
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                       <svg
-                        className="w-5 h-5 text-gray-600"
+                        className="w-5 h-5 text-white/80"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >

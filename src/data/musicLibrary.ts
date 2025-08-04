@@ -36,9 +36,28 @@ export const musicLibrary: Album[] = [
       },
     ],
   },
+  {
+    id: "gemenfeile",
+    title: "哥们废了",
+    artist: "河南说唱之神",
+    coverImage: "/albums/gemenfeile/cover.jpg",
+    year: "2025",
+    color: "bg-pink-400",
+    songs: [
+      {
+        id: "2021-wasted",
+        title: "2021 wasted",
+        artist: "河南说唱之神",
+        duration: "2:58",
+        audioFile: "/albums/gemenfeile/2021-wasted.mp3",
+        lyricsFile: "/albums/gemenfeile/2021-wasted.lrc",
+      },
+    ],
+  },
 ];
 
 export function getAlbumById(id: string): Album | undefined {
+  console.log(id);
   return musicLibrary.find((album) => album.id === id);
 }
 
