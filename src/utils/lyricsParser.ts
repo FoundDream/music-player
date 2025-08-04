@@ -67,15 +67,21 @@ export function parseLrcFile(lrcContent: string): LyricLine[] {
   return lyrics.sort((a, b) => a.time - b.time);
 }
 
-// 从文件内容解析Pretty Girl歌词
-export async function getPrettyGirlLyrics(): Promise<LyricLine[]> {
+// 从文件读取歌词的通用函数
+export async function loadLyricsFromFile(
+  lyricsFile: string
+): Promise<LyricLine[]> {
   try {
-    const response = await fetch("/Pretty-Girl-Clairo.lrc");
+    const response = await fetch(lyricsFile);
     const lrcContent = await response.text();
-    console.log(lrcContent);
     return parseLrcFile(lrcContent);
   } catch (error) {
     console.error("Error loading lyrics file:", error);
     return [];
   }
+}
+
+// 保持向后兼容
+export async function getPrettyGirlLyrics(): Promise<LyricLine[]> {
+  return loadLyricsFromFile("/Pretty-Girl-Clairo.lrc");
 }

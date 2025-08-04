@@ -161,3 +161,18 @@ button:active {
     transform: rotate(360deg);
   }
 }
+
+/* 新的音乐平台样式 */
+.music-platform-card {
+  transition: all 0.3s ease;
+}
+
+.music-platform-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 搜索框样式增强 */
+.search-input:focus {
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+}

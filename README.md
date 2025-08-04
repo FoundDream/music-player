@@ -1,9 +1,10 @@
-# 🎵 Clairo - Diary 001 EP 音乐播放器
+# 🎵 音乐收藏播放器
 
-一个优雅的音乐专辑网站，专为 Clairo 的 "Diary 001 EP" 设计。具有现代化的界面设计、动态波形图、实时歌词显示和流畅的动画效果。
+一个优雅的音乐收藏网站，采用专辑模式管理音乐文件。具有现代化的界面设计、动态背景颜色、实时歌词显示和流畅的动画效果。
 
 ## ✨ 功能特性
 
+- 📚 **专辑模式管理** - 按专辑组织音乐文件，支持专辑 → 歌曲的层级浏览
 - 🎨 **动态背景颜色** - 自动提取专辑封面主色调，生成相应的渐变背景
 - 🎵 **音频播放控制** - 播放/暂停、静音/取消静音
 - 📊 **简洁进度条** - 清晰显示播放进度
@@ -11,6 +12,7 @@
 - ⏱️ **时间显示** - 当前播放时间和总时长
 - 🎭 **流畅动画** - 使用纯 CSS 实现的优雅动效
 - 📱 **响应式设计** - 适配各种屏幕尺寸
+- 🗂️ **智能导航** - 首页 → 专辑页 → 歌曲页的清晰导航路径
 
 ## 🚀 快速开始
 
@@ -45,14 +47,22 @@ npm start
 ```
 music/
 ├── public/
-│   ├── Clairo - Pretty Girl.mp3    # 音频文件
-│   ├── Diary_001_EP_cover.jpg      # 专辑封面
-│   └── Pretty Girl - Clairo.lrc    # 歌词文件
+│   └── albums/                     # 专辑目录
+│       └── diary-001/              # 专辑ID目录
+│           ├── cover.jpg           # 专辑封面
+│           ├── pretty-girl.mp3     # 音频文件
+│           └── pretty-girl.lrc     # 歌词文件
 ├── src/
 │   ├── app/
+│   │   ├── album/[id]/             # 专辑页面
+│   │   │   └── page.tsx
+│   │   ├── song/[id]/              # 歌曲页面
+│   │   │   └── page.tsx
 │   │   ├── globals.css             # 全局样式
 │   │   ├── layout.tsx              # 布局组件
-│   │   └── page.tsx                # 主页面组件
+│   │   └── page.tsx                # 首页（专辑列表）
+│   ├── data/
+│   │   └── musicLibrary.ts         # 音乐数据管理
 │   ├── components/                 # 组件目录
 │   └── utils/
 │       ├── lyricsParser.ts         # 歌词解析器
@@ -71,34 +81,48 @@ music/
 - **ColorThief** - 图片颜色提取
 - **HTML5 Audio API** - 音频处理
 
-## 🎵 自定义配置
+## 🎵 添加新专辑
 
-### 更换音频文件
+### 1. 创建专辑目录
 
-1. 将新的音频文件放入 `public/` 目录
-2. 在 `src/app/page.tsx` 中更新音频源：
-
-```tsx
-<audio
-  ref={audioRef}
-  src="/your-audio-file.mp3" // 更新为你的音频文件
-  preload="metadata"
-/>
+```bash
+mkdir -p public/albums/your-album-id
 ```
 
-### 更换专辑封面
+### 2. 添加文件
 
-1. 将新的封面图片放入 `public/` 目录
-2. 更新图片源：
+将以下文件放入专辑目录：
+
+- `cover.jpg` - 专辑封面
+- `song-name.mp3` - 音频文件
+- `song-name.lrc` - 歌词文件（可选）
+
+### 3. 更新数据配置
+
+在 `src/data/musicLibrary.ts` 中添加新专辑：
 
 ```tsx
-<Image
-  src="/your-cover-image.jpg" // 更新为你的封面图片
-  alt="Album Cover"
-  width={300}
-  height={300}
-  className="rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-105"
-/>
+export const musicLibrary: Album[] = [
+  // 现有专辑...
+  {
+    id: "your-album-id",
+    title: "专辑名称",
+    artist: "艺术家",
+    coverImage: "/albums/your-album-id/cover.jpg",
+    year: "2024",
+    color: "bg-blue-400", // 可选的主题色
+    songs: [
+      {
+        id: "song-id",
+        title: "歌曲名称",
+        artist: "艺术家",
+        duration: "3:45",
+        audioFile: "/albums/your-album-id/song-name.mp3",
+        lyricsFile: "/albums/your-album-id/song-name.lrc", // 可选
+      },
+    ],
+  },
+];
 ```
 
 ### 修改歌词
