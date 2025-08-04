@@ -27,12 +27,52 @@ export const musicLibrary: Album[] = [
     color: "bg-pink-400",
     songs: [
       {
+        id: "hello",
+        title: "Hello?",
+        artist: "Clairo, Rejjie Snow",
+        duration: "2:46",
+        audioFile: "/albums/diary-001/hello.mp3",
+        lyricsFile: "/albums/diary-001/hello.lrc",
+      },
+      {
+        id: "flaming-hot-cheetos",
+        title: "Flaming Hot Cheetos",
+        artist: "Clairo",
+        duration: "2:31",
+        audioFile: "/albums/diary-001/flaming-hot-cheetos.mp3",
+        lyricsFile: "/albums/diary-001/flaming-hot-cheetos.lrc",
+      },
+      {
+        id: "bomd",
+        title: "B.O.M.D.",
+        artist: "Clairo, Danny L Harle",
+        duration: "3:16",
+        audioFile: "/albums/diary-001/bomd.mp3",
+        lyricsFile: "/albums/diary-001/bomd.lrc",
+      },
+      {
+        id: "4ever",
+        title: "4EVER",
+        artist: "Clairo",
+        duration: "3:17",
+        audioFile: "/albums/diary-001/4ever.mp3",
+        lyricsFile: "/albums/diary-001/4ever.lrc",
+      },
+      {
         id: "pretty-girl",
         title: "Pretty Girl",
         artist: "Clairo",
         duration: "3:45",
         audioFile: "/albums/diary-001/pretty-girl.mp3",
         lyricsFile: "/albums/diary-001/pretty-girl.lrc",
+      },
+      {
+        id: "how-demo",
+        title: "How (demo)",
+        artist: "Clairo",
+        duration: "2:37",
+        audioFile: "/albums/diary-001/how-demo.mp3",
+        lyricsFile: "/albums/diary-001/how-demo.lrc",
       },
     ],
   },
@@ -57,7 +97,6 @@ export const musicLibrary: Album[] = [
 ];
 
 export function getAlbumById(id: string): Album | undefined {
-  console.log(id);
   return musicLibrary.find((album) => album.id === id);
 }
 
