@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { getPrettyGirlLyrics, LyricLine } from "../utils/lyricsParser";
@@ -9,9 +9,6 @@ import {
   generateBackgroundGradient,
   BackgroundGradient,
 } from "../utils/colorExtractor";
-
-// 歌词数据 - 使用解析器从.lrc文件获取
-const lyrics: LyricLine[] = getPrettyGirlLyrics();
 
 export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -23,8 +20,41 @@ export default function Home() {
   const [backgroundGradient, setBackgroundGradient] =
     useState<BackgroundGradient | null>(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [lyrics, setLyrics] = useState<LyricLine[]>([]);
 
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // 加载歌词
+  useEffect(() => {
+    const loadLyrics = async () => {
+      try {
+        const lyricsData = await getPrettyGirlLyrics();
+        console.log("Loaded lyrics:", lyricsData.length, "lines");
+        setLyrics(lyricsData);
+      } catch (error) {
+        console.error("Failed to load lyrics:", error);
+      }
+    };
+
+    loadLyrics();
+  }, []);
+
+  // 更新当前歌词的函数
+  const updateCurrentLyric = useCallback(
+    (time: number) => {
+      if (lyrics.length === 0) return;
+
+      const index = lyrics.findIndex((lyric, i) => {
+        const nextLyric = lyrics[i + 1];
+        return time >= lyric.time && (!nextLyric || time < nextLyric.time);
+      });
+      if (index !== -1 && index !== currentLyricIndex) {
+        console.log("Updating lyric index:", index, "at time:", time);
+        setCurrentLyricIndex(index);
+      }
+    },
+    [lyrics, currentLyricIndex]
+  );
 
   useEffect(() => {
     if (audioRef.current) {
@@ -84,7 +114,7 @@ export default function Home() {
         audio.removeEventListener("error", handleError);
       };
     }
-  }, []);
+  }, [updateCurrentLyric]);
 
   // 提取专辑封面颜色
   useEffect(() => {
@@ -104,16 +134,6 @@ export default function Home() {
 
     extractColors();
   }, []);
-
-  const updateCurrentLyric = (time: number) => {
-    const index = lyrics.findIndex((lyric, i) => {
-      const nextLyric = lyrics[i + 1];
-      return time >= lyric.time && (!nextLyric || time < nextLyric.time);
-    });
-    if (index !== -1 && index !== currentLyricIndex) {
-      setCurrentLyricIndex(index);
-    }
-  };
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -156,18 +176,21 @@ export default function Home() {
         {/* 专辑信息 */}
         <div className="text-center animate-slide-up-delay-2">
           <h1 className="text-lg font-bold text-white">Pretty Girl</h1>
-          <p className="text-lg font-medium">Clairo</p>
+          <p className="text-lg font-medium text-white">Clairo</p>
         </div>
 
         {/* 动态歌词 */}
         <div className="text-center min-h-[80px] flex flex-col items-center justify-center animate-slide-up-delay-6">
           <div key={currentLyricIndex} className="lyrics-container">
             <p className="text-white text-medium font-bold lyrics-text">
-              {lyrics[currentLyricIndex]?.text ||
-                "Polaroid of you dancing in my room"}
+              {lyrics.length > 0 && lyrics[currentLyricIndex]?.text
+                ? lyrics[currentLyricIndex].text
+                : "Polaroid of you dancing in my room"}
             </p>
             <p className="text-white/70 text-lg font-bold lyrics-translation">
-              {lyrics[currentLyricIndex]?.translation || ""}
+              {lyrics.length > 0 && lyrics[currentLyricIndex]?.translation
+                ? lyrics[currentLyricIndex].translation
+                : "宝丽来照片里的你在我房间里跳舞"}
             </p>
           </div>
         </div>
