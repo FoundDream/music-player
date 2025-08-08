@@ -144,13 +144,13 @@ export const musicLibrary: Album[] = [
   },
 ];
 
-export function getAlbumById(id: string): Album | undefined {
+export const getAlbumById = (id: string): Album | undefined => {
   return musicLibrary.find((album) => album.id === id);
-}
+};
 
-export function getSongById(
+export const getSongById = (
   songId: string
-): { song: Song; album: Album } | undefined {
+): { song: Song; album: Album } | undefined => {
   for (const album of musicLibrary) {
     const song = album.songs.find((s) => s.id === songId);
     if (song) {
@@ -158,4 +158,4 @@ export function getSongById(
     }
   }
   return undefined;
-}
+};

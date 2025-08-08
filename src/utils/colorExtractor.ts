@@ -20,9 +20,9 @@ function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h: number, s: number, l: number;
+  let h: number, s: number;
 
-  l = (max + min) / 2;
+  const l: number = (max + min) / 2;
 
   if (max === min) {
     h = s = 0;
