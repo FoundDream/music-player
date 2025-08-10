@@ -244,7 +244,7 @@ export function LyricsCard({
     ctx.fillStyle = "#fff";
     ctx.font = "bold 16px IBM Plex Sans Noto Sans SC";
     ctx.textAlign = "left";
-    ctx.fillText("@Audiary", contentX, contentH - 16);
+    ctx.fillText("@Audiary", contentX, contentH + 20);
   }, [artistName, songTitle, selectedLyrics, backgroundGradient, coverImg]);
 
   // 渲染生命周期：依赖变更时重绘，初次也会绘制
