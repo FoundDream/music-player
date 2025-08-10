@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Image from "next/image";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { getAlbumById } from "@/data/musicLibrary";
 import {
   extractColorsFromImage,
@@ -11,10 +11,14 @@ import {
 } from "@/utils/colorExtractor";
 import { ArrowLeft } from "lucide-react";
 
-export default function AlbumPage() {
+export default function AlbumPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const router = useRouter();
-  const params = useParams();
-  const albumId = params.id as string;
+  const resolvedParams = use(params);
+  const albumId = resolvedParams.id as string;
 
   const [backgroundGradient, setBackgroundGradient] =
     useState<BackgroundGradient | null>(null);
@@ -48,12 +52,14 @@ export default function AlbumPage() {
         }}
       >
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">专辑未找到</h1>
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Album Not Found
+          </h1>
           <button
             onClick={() => router.push("/")}
             className="px-6 py-3 bg-white/20 text-white rounded-full cursor-pointer"
           >
-            返回首页
+            Back to Home
           </button>
         </div>
       </div>

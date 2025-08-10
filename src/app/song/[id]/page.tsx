@@ -20,9 +20,10 @@ export default function SongPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  // Next.js 15 feature to resolve params
   const resolvedParams = use(params);
-  const [track, setTrack] = useState<Song | null>(null);
-  const [album, setAlbum] = useState<Album | null>(null);
+  const [track, setTrack] = useState<Song>();
+  const [album, setAlbum] = useState<Album>();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentLyricIndex, setCurrentLyricIndex] = useState(0);
   const [backgroundGradient, setBackgroundGradient] =
@@ -35,7 +36,7 @@ export default function SongPage({
   const audioRef = useRef<HTMLAudioElement>(null);
   const router = useRouter();
 
-  // 初始化歌曲数据
+  // Initialize song data
   useEffect(() => {
     const songData = getSongById(resolvedParams.id);
     if (songData) {
@@ -44,7 +45,7 @@ export default function SongPage({
     }
   }, [resolvedParams.id]);
 
-  // 加载歌词
+  // Load lyrics
   useEffect(() => {
     if (!track) return;
 
@@ -64,7 +65,7 @@ export default function SongPage({
     loadLyrics();
   }, [track]);
 
-  // 更新当前歌词的函数
+  // Update current lyric
   const updateCurrentLyric = useCallback(
     (time: number) => {
       if (lyrics.length === 0) return;
@@ -109,7 +110,6 @@ export default function SongPage({
       audio.addEventListener("play", handlePlay);
       audio.addEventListener("pause", handlePause);
       audio.addEventListener("ended", handleEnded);
-      audio.addEventListener("error", handleError);
 
       // 清理函数
       return () => {
@@ -149,7 +149,7 @@ export default function SongPage({
     }
   };
 
-  // 歌词选择功能
+  // Lyrics selection function
   const toggleLyricSelection = (index: number) => {
     const newSelected = new Set(selectedLyrics);
     if (newSelected.has(index)) {
@@ -164,7 +164,7 @@ export default function SongPage({
     setSelectedLyrics(new Set());
   };
 
-  // 处理歌词卡片预览
+  // Handle lyrics card preview
   const handleGenerateCard = () => {
     setShowCardPreview(true);
   };
@@ -191,13 +191,13 @@ export default function SongPage({
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-center justify-center">
         <div className="text-center text-black">
-          <h1 className="text-2xl font-bold mb-4 ">歌曲未找到</h1>
+          <h1 className="text-2xl font-bold mb-4 ">Song not found</h1>
           <Link
             href="/"
             className="inline-flex items-center gap-2 px-4 py-2 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            返回音乐库
+            Back to music library
           </Link>
         </div>
       </div>
@@ -216,7 +216,10 @@ export default function SongPage({
         <div className="p-6 text-white" onClick={handleSongBack}>
           <ArrowLeft className="w-4 h-4" />
         </div>
-        <div className="p-6 text-white" onClick={() => setShowFullLyrics(true)}>
+        <div
+          className="p-6 text-white cursor-pointer"
+          onClick={() => setShowFullLyrics(true)}
+        >
           <Share className="w-4 h-4" />
         </div>
       </div>
@@ -225,11 +228,11 @@ export default function SongPage({
       <audio ref={audioRef} src={track?.audioFile} preload="metadata" />
 
       {showFullLyrics ? (
-        // 全屏歌词选择模式
+        // Full screen lyrics selection mode
         <div className="flex-1 flex flex-col">
-          {/* Sticky 顶部栏 */}
+          {/* Sticky top bar */}
           <div className="sticky top-0 z-10 backdrop-blur-sm p-6">
-            {/* 顶部信息栏 */}
+            {/* Top information bar */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
                 <Image
@@ -247,21 +250,21 @@ export default function SongPage({
                 </div>
               </div>
 
-              {/* 返回按钮 */}
+              {/* Back button */}
               <div className="flex items-center justify-between">
                 <div className="flex gap-3">
                   <button
                     onClick={clearSelection}
                     className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm text-sm"
                   >
-                    清空
+                    Clear
                   </button>
                   {selectedLyrics.size > 0 && (
                     <button
                       onClick={handleGenerateCard}
                       className="px-6 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm text-sm"
                     >
-                      生成卡片 ({selectedLyrics.size})
+                      Generate card ({selectedLyrics.size})
                     </button>
                   )}
                 </div>
@@ -269,7 +272,7 @@ export default function SongPage({
             </div>
           </div>
 
-          {/* 可滚动的歌词列表 */}
+          {/* Scrollable lyrics list */}
           <div className="flex-1 overflow-y-auto">
             <div className="p-6">
               <div className="max-w-4xl mx-auto space-y-3">
@@ -284,7 +287,7 @@ export default function SongPage({
                     onClick={() => toggleLyricSelection(index)}
                   >
                     <div className="flex items-center gap-4">
-                      {/* 选择指示器 */}
+                      {/* Selection indicator */}
                       <div
                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                           selectedLyrics.has(index)
@@ -307,7 +310,7 @@ export default function SongPage({
                         )}
                       </div>
 
-                      {/* 歌词内容 */}
+                      {/* Lyrics content */}
                       <div className="flex-1">
                         <p className="text-white text-base font-medium leading-relaxed">
                           {lyric.text}
@@ -374,8 +377,8 @@ export default function SongPage({
         <LyricsCard
           lyrics={lyrics}
           selectedIndices={selectedLyrics}
-          songTitle={track?.title || ""}
-          artistName={track?.artist || ""}
+          songTitle={track?.title}
+          artistName={track?.artist}
           albumTitle={album?.title || ""}
           backgroundGradient={backgroundGradient}
           onClose={handleClosePreview}

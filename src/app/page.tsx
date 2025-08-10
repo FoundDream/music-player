@@ -7,12 +7,21 @@ import { musicLibrary } from "@/data/musicLibrary";
 export default function Home() {
   const router = useRouter();
 
+  // Get current date
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentDay = currentDate.getDate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
       <div className="p-4 px-12">
         <div className="text-right mb-4">
-          <div className="text-3xl font-bold text-black">08</div>
-          <div className="text-black/60">/04</div>
+          <div className="text-3xl font-bold text-black">
+            {currentMonth.toString().padStart(2, "0")}
+          </div>
+          <div className="text-black/60">
+            /{currentDay.toString().padStart(2, "0")}
+          </div>
           <div className="w-20 h-1 bg-black mt-2" />
         </div>
         {/* Music Albums */}
