@@ -379,7 +379,7 @@ export default function SongPage({
           selectedIndices={selectedLyrics}
           songTitle={track?.title}
           artistName={track?.artist}
-          albumTitle={album?.title || ""}
+          coverImage={album?.coverImage}
           backgroundGradient={backgroundGradient}
           onClose={handleClosePreview}
           onSave={handleSaveCard}
