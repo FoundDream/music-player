@@ -77,7 +77,7 @@ export default function AlbumPage({
       <div className="p-6 top-6 left-6">
         <button
           onClick={() => router.push("/")}
-          className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+          className="flex items-center gap-2 text-white/80 hover:text-white transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>

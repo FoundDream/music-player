@@ -213,7 +213,7 @@ export default function SongPage({
     >
       {/* Operation Buttons */}
       <div className="flex items-center justify-between">
-        <div className="p-6 text-white" onClick={handleSongBack}>
+        <div className="p-6 text-white cursor-pointer" onClick={handleSongBack}>
           <ArrowLeft className="w-4 h-4" />
         </div>
         <div
