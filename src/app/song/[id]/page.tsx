@@ -1,33 +1,27 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect, useCallback, use } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, Share } from "lucide-react";
-import { parseLrcFile, LyricLine } from "../../../utils/lyricsParser";
+import { LyricsCard } from '@/components/LyricsCardGenerator';
+import { Album, getSongById, Song } from '@/data/musicLibrary';
+import { ArrowLeft, Share } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { use, useCallback, useEffect, useRef, useState } from 'react';
 import {
+  BackgroundGradient,
   extractColorsFromImage,
   generateBackgroundGradient,
-  BackgroundGradient,
-} from "../../../utils/colorExtractor";
-import { getSongById } from "@/data/musicLibrary";
-import { LyricsCard } from "@/components/LyricsCardGenerator";
-import { useRouter } from "next/navigation";
-import { Song, Album } from "@/data/musicLibrary";
+} from '../../../utils/colorExtractor';
+import { LyricLine, parseLrcFile } from '../../../utils/lyricsParser';
 
-export default function SongPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function SongPage({ params }: { params: Promise<{ id: string }> }) {
   // Next.js 15 feature to resolve params
   const resolvedParams = use(params);
   const [track, setTrack] = useState<Song>();
   const [album, setAlbum] = useState<Album>();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentLyricIndex, setCurrentLyricIndex] = useState(0);
-  const [backgroundGradient, setBackgroundGradient] =
-    useState<BackgroundGradient | null>(null);
+  const [backgroundGradient, setBackgroundGradient] = useState<BackgroundGradient>();
   const [lyrics, setLyrics] = useState<LyricLine[]>([]);
   const [selectedLyrics, setSelectedLyrics] = useState<Set<number>>(new Set());
   const [showFullLyrics, setShowFullLyrics] = useState(false);
@@ -58,7 +52,7 @@ export default function SongPage({
           setLyrics(lyricsData);
         }
       } catch (error) {
-        console.error("Failed to load lyrics:", error);
+        console.error('Failed to load lyrics:', error);
       }
     };
 
@@ -78,7 +72,7 @@ export default function SongPage({
         setCurrentLyricIndex(index);
       }
     },
-    [lyrics, currentLyricIndex]
+    [lyrics, currentLyricIndex],
   );
 
   useEffect(() => {
@@ -102,22 +96,22 @@ export default function SongPage({
       };
 
       const handleError = (e: Event) => {
-        console.error("Audio error:", e);
+        console.error('Audio error:', e);
       };
 
       // 添加事件监听器
-      audio.addEventListener("timeupdate", handleTimeUpdate);
-      audio.addEventListener("play", handlePlay);
-      audio.addEventListener("pause", handlePause);
-      audio.addEventListener("ended", handleEnded);
+      audio.addEventListener('timeupdate', handleTimeUpdate);
+      audio.addEventListener('play', handlePlay);
+      audio.addEventListener('pause', handlePause);
+      audio.addEventListener('ended', handleEnded);
 
       // 清理函数
       return () => {
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        audio.removeEventListener("play", handlePlay);
-        audio.removeEventListener("pause", handlePause);
-        audio.removeEventListener("ended", handleEnded);
-        audio.removeEventListener("error", handleError);
+        audio.removeEventListener('timeupdate', handleTimeUpdate);
+        audio.removeEventListener('play', handlePlay);
+        audio.removeEventListener('pause', handlePause);
+        audio.removeEventListener('ended', handleEnded);
+        audio.removeEventListener('error', handleError);
       };
     }
   }, [updateCurrentLyric]);
@@ -132,7 +126,7 @@ export default function SongPage({
         const gradient = generateBackgroundGradient(colors);
         setBackgroundGradient(gradient);
       } catch (error) {
-        console.error("Failed to extract colors:", error);
+        console.error('Failed to extract colors:', error);
       }
     };
 
@@ -164,11 +158,6 @@ export default function SongPage({
     setSelectedLyrics(new Set());
   };
 
-  // Handle lyrics card preview
-  const handleGenerateCard = () => {
-    setShowCardPreview(true);
-  };
-
   const handleClosePreview = () => {
     setShowCardPreview(false);
   };
@@ -183,7 +172,7 @@ export default function SongPage({
     } else if (album) {
       router.push(`/album/${album.id}`);
     } else {
-      router.push("/");
+      router.push('/');
     }
   };
 
@@ -236,16 +225,14 @@ export default function SongPage({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
                 <Image
-                  src={album?.coverImage || "/default-cover.jpg"}
+                  src={album?.coverImage || '/default-cover.jpg'}
                   alt={`${album?.title} cover`}
                   width={60}
                   height={60}
                   className="rounded-lg shadow-lg"
                 />
                 <div>
-                  <h1 className="text-lg font-bold text-white">
-                    {track?.title}
-                  </h1>
+                  <h1 className="text-lg font-bold text-white">{track?.title}</h1>
                   <p className="text-sm text-white/70">{track?.artist}</p>
                 </div>
               </div>
@@ -261,7 +248,7 @@ export default function SongPage({
                   </button>
                   {selectedLyrics.size > 0 && (
                     <button
-                      onClick={handleGenerateCard}
+                      onClick={() => setShowCardPreview(true)}
                       className="px-6 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm text-sm"
                     >
                       Generate card ({selectedLyrics.size})
@@ -278,11 +265,11 @@ export default function SongPage({
               <div className="max-w-4xl mx-auto space-y-3">
                 {lyrics.map((lyric, index) => (
                   <div
-                    key={index}
+                    key={lyric.text}
                     className={`cursor-pointer p-4 rounded-xl transition-all duration-200 ${
                       selectedLyrics.has(index)
-                        ? "bg-white/25 border-2 border-white/60 shadow-lg scale-[1.02]"
-                        : "bg-white/10 hover:bg-white/15 border border-white/20"
+                        ? 'bg-white/25 border-2 border-white/60 shadow-lg scale-[1.02]'
+                        : 'bg-white/10 hover:bg-white/15 border border-white/20'
                     }`}
                     onClick={() => toggleLyricSelection(index)}
                   >
@@ -291,8 +278,8 @@ export default function SongPage({
                       <div
                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                           selectedLyrics.has(index)
-                            ? "bg-white border-white"
-                            : "border-white/50"
+                            ? 'bg-white border-white'
+                            : 'border-white/50'
                         }`}
                       >
                         {selectedLyrics.has(index) && (
@@ -336,7 +323,7 @@ export default function SongPage({
             <div className="flex justify-center mb-6">
               <div className="relative group" onClick={togglePlay}>
                 <Image
-                  src={album?.coverImage || ""}
+                  src={album?.coverImage || ''}
                   alt={`${album?.title} cover`}
                   width={300}
                   height={300}
@@ -348,9 +335,7 @@ export default function SongPage({
             {/* Info */}
             <div className="text-center mb-5 animate-slide-up-delay-2">
               <h1 className="text-2xl font-bold text-white">{track?.title}</h1>
-              <p className="text-xl font-medium text-white/80 ">
-                {track?.artist}
-              </p>
+              <p className="text-xl font-medium text-white/80 ">{track?.artist}</p>
             </div>
 
             {/* Lyrics */}
@@ -359,12 +344,12 @@ export default function SongPage({
                 <p className="text-white text-xl font-semibold lyrics-text">
                   {lyrics.length > 0 && lyrics[currentLyricIndex]?.text
                     ? lyrics[currentLyricIndex].text
-                    : ""}
+                    : ''}
                 </p>
                 <p className="text-white/70 text-lg font-bold lyrics-translation">
                   {lyrics.length > 0 && lyrics[currentLyricIndex]?.translation
                     ? lyrics[currentLyricIndex].translation
-                    : ""}
+                    : ''}
                 </p>
               </div>
             </div>

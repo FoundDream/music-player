@@ -1,4 +1,4 @@
-import ColorThief from "colorthief";
+import ColorThief from 'colorthief';
 
 export interface ExtractedColors {
   dominant: [number, number, number];
@@ -100,12 +100,10 @@ function generateColorVariations(rgb: [number, number, number]): {
 }
 
 // 从图片提取颜色
-export async function extractColorsFromImage(
-  imageSrc: string
-): Promise<ExtractedColors> {
+export async function extractColorsFromImage(imageSrc: string): Promise<ExtractedColors> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    img.crossOrigin = 'anonymous';
 
     img.onload = () => {
       try {
@@ -123,7 +121,7 @@ export async function extractColorsFromImage(
     };
 
     img.onerror = () => {
-      reject(new Error("Failed to load image"));
+      reject(new Error('Failed to load image'));
     };
 
     img.src = imageSrc;
@@ -131,16 +129,14 @@ export async function extractColorsFromImage(
 }
 
 // 生成背景渐变
-export function generateBackgroundGradient(
-  colors: ExtractedColors
-): BackgroundGradient {
+export function generateBackgroundGradient(colors: ExtractedColors): BackgroundGradient {
   const [r, g, b] = colors.dominant;
   const variations = generateColorVariations([r, g, b]);
 
   // 使用主色调和其变化生成渐变
-  const from = `rgb(${variations.darker.join(", ")})`;
+  const from = `rgb(${variations.darker.join(', ')})`;
   const via = `rgb(${r}, ${g}, ${b})`;
-  const to = `rgb(${variations.lighter.join(", ")})`;
+  const to = `rgb(${variations.lighter.join(', ')})`;
 
   // 生成CSS渐变字符串
   const style = `linear-gradient(135deg, ${from} 0%, ${via} 50%, ${to} 100%)`;
@@ -156,29 +152,29 @@ export function generateBackgroundGradient(
 // 生成Tailwind CSS类名
 export function generateTailwindGradient(colors: ExtractedColors): string {
   const [r, g, b] = colors.dominant;
-  const [h, s, l] = rgbToHsl(r, g, b);
+  const [h, , l] = rgbToHsl(r, g, b);
 
   // 根据色相判断颜色类型
-  let colorName = "purple";
-  if (h >= 0 && h < 30) colorName = "red";
-  else if (h >= 30 && h < 60) colorName = "orange";
-  else if (h >= 60 && h < 120) colorName = "green";
-  else if (h >= 120 && h < 180) colorName = "emerald";
-  else if (h >= 180 && h < 240) colorName = "blue";
-  else if (h >= 240 && h < 300) colorName = "purple";
-  else if (h >= 300 && h < 360) colorName = "pink";
+  let colorName = 'purple';
+  if (h >= 0 && h < 30) colorName = 'red';
+  else if (h >= 30 && h < 60) colorName = 'orange';
+  else if (h >= 60 && h < 120) colorName = 'green';
+  else if (h >= 120 && h < 180) colorName = 'emerald';
+  else if (h >= 180 && h < 240) colorName = 'blue';
+  else if (h >= 240 && h < 300) colorName = 'purple';
+  else if (h >= 300 && h < 360) colorName = 'pink';
 
   // 根据亮度选择深浅
-  const lightness = l < 30 ? "900" : l < 50 ? "800" : l < 70 ? "700" : "600";
-  const midTone = l < 30 ? "800" : l < 50 ? "700" : l < 70 ? "600" : "500";
-  const highlight = l < 30 ? "700" : l < 50 ? "600" : l < 70 ? "500" : "400";
+  const lightness = l < 30 ? '900' : l < 50 ? '800' : l < 70 ? '700' : '600';
+  const midTone = l < 30 ? '800' : l < 50 ? '700' : l < 70 ? '600' : '500';
+  const highlight = l < 30 ? '700' : l < 50 ? '600' : l < 70 ? '500' : '400';
 
   return `bg-gradient-to-br from-${colorName}-${lightness} via-${colorName}-${midTone} to-${colorName}-${highlight}`;
 }
 
 // 判断文字颜色（基于背景亮度）
-export function getTextColor(rgb: [number, number, number]): "white" | "black" {
+export function getTextColor(rgb: [number, number, number]): 'white' | 'black' {
   const [r, g, b] = rgb;
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? "black" : "white";
+  return luminance > 0.5 ? 'black' : 'white';
 }

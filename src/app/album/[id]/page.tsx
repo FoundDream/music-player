@@ -1,27 +1,22 @@
-"use client";
+'use client';
 
-import { useState, useEffect, use } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { getAlbumById } from "@/data/musicLibrary";
+import { getAlbumById } from '@/data/musicLibrary';
 import {
+  BackgroundGradient,
   extractColorsFromImage,
   generateBackgroundGradient,
-  BackgroundGradient,
-} from "@/utils/colorExtractor";
-import { ArrowLeft } from "lucide-react";
+} from '@/utils/colorExtractor';
+import { ArrowLeft } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { use, useEffect, useState } from 'react';
 
-export default function AlbumPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function AlbumPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const resolvedParams = use(params);
   const albumId = resolvedParams.id as string;
 
-  const [backgroundGradient, setBackgroundGradient] =
-    useState<BackgroundGradient | null>(null);
+  const [backgroundGradient, setBackgroundGradient] = useState<BackgroundGradient>();
 
   const album = getAlbumById(albumId);
 
@@ -35,7 +30,7 @@ export default function AlbumPage({
         const gradient = generateBackgroundGradient(colors);
         setBackgroundGradient(gradient);
       } catch (error) {
-        console.error("Failed to extract colors:", error);
+        console.error('Failed to extract colors:', error);
       }
     };
     extractColors();
@@ -47,16 +42,13 @@ export default function AlbumPage({
         className="min-h-screen flex items-center justify-center transition-all duration-1000 ease-in-out"
         style={{
           background:
-            backgroundGradient?.style ||
-            "linear-gradient(to br, #fefce8, #fef3c7)",
+            backgroundGradient?.style || 'linear-gradient(to br, #fefce8, #fef3c7)',
         }}
       >
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
-            Album Not Found
-          </h1>
+          <h1 className="text-2xl font-bold text-white mb-4">Album Not Found</h1>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push('/')}
             className="px-6 py-3 bg-white/20 text-white rounded-full cursor-pointer"
           >
             Back to Home
@@ -76,7 +68,7 @@ export default function AlbumPage({
       {/* Back to Home */}
       <div className="p-6 top-6 left-6">
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push('/')}
           className="flex items-center gap-2 text-white/80 hover:text-white transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -95,9 +87,7 @@ export default function AlbumPage({
           />
           <div className="flex flex-col justify-end">
             <div className="text-sm text-white/60 mb-2">Album</div>
-            <h1 className="text-4xl font-bold text-white mb-2">
-              {album.title}
-            </h1>
+            <h1 className="text-4xl font-bold text-white mb-2">{album.title}</h1>
             <div className="flex items-center gap-2 text-white/80">
               <span>{album.artist}</span>
               <span>•</span>

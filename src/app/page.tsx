@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { musicLibrary } from "@/data/musicLibrary";
+import { musicLibrary } from '@/data/musicLibrary';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
@@ -17,11 +17,9 @@ export default function Home() {
       <div className="p-4 px-12">
         <div className="text-right mb-4">
           <div className="text-3xl font-bold text-black">
-            {currentMonth.toString().padStart(2, "0")}
+            {currentMonth.toString().padStart(2, '0')}
           </div>
-          <div className="text-black/60">
-            /{currentDay.toString().padStart(2, "0")}
-          </div>
+          <div className="text-black/60">/{currentDay.toString().padStart(2, '0')}</div>
           <div className="w-20 h-1 bg-black mt-2" />
         </div>
         {/* Music Albums */}
@@ -48,7 +46,7 @@ export default function Home() {
                 </h3>
                 <p className="text-xs text-gray-600">{album.artist}</p>
                 <p className="text-xs text-gray-500">
-                  {album.year} • {album.songs.length} 首歌曲
+                  {album.year} • {album.songs.length} Songs
                 </p>
               </div>
             ))}

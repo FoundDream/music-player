@@ -5,7 +5,7 @@ export interface LyricLine {
 }
 
 export function parseLrcFile(lrcContent: string): LyricLine[] {
-  const lines = lrcContent.split("\n");
+  const lines = lrcContent.split('\n');
   const lyrics: LyricLine[] = [];
   const timeMap = new Map<number, { text?: string; translation?: string }>();
 
@@ -20,7 +20,7 @@ export function parseLrcFile(lrcContent: string): LyricLine[] {
     const time = minutes * 60 + seconds + milliseconds / 1000;
 
     // 提取歌词文本（移除时间标签）
-    const text = line.replace(/\[.*?\]/g, "").trim();
+    const text = line.replace(/\[.*?\]/g, '').trim();
     if (!text) continue;
 
     // 检查是否有中英文对照（用空格分隔）
@@ -56,9 +56,8 @@ export function parseLrcFile(lrcContent: string): LyricLine[] {
     if (entry.text || entry.translation) {
       lyrics.push({
         time,
-        text: entry.text || entry.translation || "",
-        translation:
-          entry.text && entry.translation ? entry.translation : undefined,
+        text: entry.text || entry.translation || '',
+        translation: entry.text && entry.translation ? entry.translation : undefined,
       });
     }
   }
@@ -68,20 +67,18 @@ export function parseLrcFile(lrcContent: string): LyricLine[] {
 }
 
 // 从文件读取歌词的通用函数
-export async function loadLyricsFromFile(
-  lyricsFile: string
-): Promise<LyricLine[]> {
+export async function loadLyricsFromFile(lyricsFile: string): Promise<LyricLine[]> {
   try {
     const response = await fetch(lyricsFile);
     const lrcContent = await response.text();
     return parseLrcFile(lrcContent);
   } catch (error) {
-    console.error("Error loading lyrics file:", error);
+    console.error('Error loading lyrics file:', error);
     return [];
   }
 }
 
 // 保持向后兼容
 export async function getPrettyGirlLyrics(): Promise<LyricLine[]> {
-  return loadLyricsFromFile("/Pretty-Girl-Clairo.lrc");
+  return loadLyricsFromFile('/Pretty-Girl-Clairo.lrc');
 }
